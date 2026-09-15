@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="he">
+<head>
+<meta charset="utf-8">
+<title>מסך פערי הגבייה</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Demonstration of a Form 17 revenue-control screen. Synthetic data only.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>*{box-sizing:border-box}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F2F5F4; --panel:#FFFFFF; --sunk:#E9EEEC; --hover:#EFF3F1;
+  --ink:#16211F; --ink-2:#4B5955; --ink-3:#83908B;
+  --rule:#D6DDDA; --rule-2:#C0CAC6;
+  --accent:#0F6E63; --accent-soft:#E0EDEA;
+  --gap:#8E5B0D; --gap-soft:#F4EAD7;
+  --owed:#9A4045; --owed-soft:#F7E6E5;
+  --expo:#465B80; --expo-soft:#E3E9F1;
+  --open:#634E79; --open-soft:#EDE7F2;
+  --ok:#2F6B4F; --ok-soft:#E1EDE6;
+  --display:"Frank Ruhl Libre",Georgia,"Times New Roman",serif;
+  --ui:"IBM Plex Sans Hebrew","Segoe UI",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1513; --panel:#18211F; --sunk:#131B19; --hover:#1E2926;
+  --ink:#E7EDEA; --ink-2:#A3AFAB; --ink-3:#76827E;
+  --rule:#293331; --rule-2:#39443F;
+  --accent:#52BBAA; --accent-soft:#16302C;
+  --gap:#D9A64A; --gap-soft:#2C2415;
+  --owed:#E08A8D; --owed-soft:#2E1C1D;
+  --expo:#93AAD1; --expo-soft:#1A2231;
+  --open:#B499CE; --open-soft:#231C2D;
+  --ok:#6FBF93; --ok-soft:#16261E;
+}}
+:root[data-theme="dark"]{
+  --paper:#0F1513; --panel:#18211F; --sunk:#131B19; --hover:#1E2926;
+  --ink:#E7EDEA; --ink-2:#A3AFAB; --ink-3:#76827E;
+  --rule:#293331; --rule-2:#39443F;
+  --accent:#52BBAA; --accent-soft:#16302C;
+  --gap:#D9A64A; --gap-soft:#2C2415;
+  --owed:#E08A8D; --owed-soft:#2E1C1D;
+  --expo:#93AAD1; --expo-soft:#1A2231;
+  --open:#B499CE; --open-soft:#231C2D;
+  --ok:#6FBF93; --ok-soft:#16261E;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-size:14px}
+.app{max-width:1240px;margin:0 auto;padding:0 22px 72px}
+h1,h2{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;direction:ltr;display:inline-block}
+.tnum{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit}
+
+/* ---------------- top bar ---------------- */
+.top{padding:26px 0 0}
+.brandrow{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brandrow h1{font-size:26px;letter-spacing:-.01em}
+.brandrow .sub{font-size:13px;color:var(--ink-3)}
+.demo{margin-inline-start:auto;font-size:12px;color:var(--ink-2);background:var(--sunk);
+  border:1px solid var(--rule-2);padding:4px 10px;border-radius:2px}
+.demo b{font-weight:600;color:var(--ink)}
+
+.searchbar{margin-top:20px;display:flex;align-items:center;gap:0;background:var(--panel);
+  border:1px solid var(--rule-2);border-radius:3px}
+.searchbar:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.searchbar svg{flex:0 0 auto;margin:0 14px;color:var(--ink-3)}
+.searchbar input{flex:1;border:0;background:none;padding:15px 0;font:inherit;font-size:16px;
+  color:var(--ink);outline:none;min-width:0}
+.searchbar input::placeholder{color:var(--ink-3)}
+.searchbar .clear{border:0;background:none;padding:0 16px;color:var(--ink-3);cursor:pointer;
+  font-size:18px;line-height:1}
+.searchbar .clear:hover{color:var(--ink)}
+
+.tabs{display:flex;gap:2px;margin-top:18px;border-bottom:1px solid var(--rule)}
+.tab{border:0;background:none;padding:9px 16px;cursor:pointer;font-size:14px;color:var(--ink-2);
+  border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-inline-start:6px}
+
+/* ---------------- KPI ---------------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);margin-top:26px}
+.kpi{background:var(--panel);padding:18px 18px 16px}
+.kpi .k{font-size:12.5px;color:var(--ink-3);margin-bottom:9px}
+.kpi .v{font-family:var(--mono);font-size:27px;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;line-height:1.1}
+.kpi .v .c{font-size:14px;color:var(--ink-3);margin-inline-start:6px}
+.kpi .n{font-size:12px;color:var(--ink-3);margin-top:8px}
+.kpi.gap .v{color:var(--gap)} .kpi.rec .v{color:var(--accent)}
+.strip{margin-top:12px;font-size:12.5px;color:var(--ink-3);display:flex;gap:20px;flex-wrap:wrap}
+.strip b{font-family:var(--mono);color:var(--ink-2);font-weight:500}
+
+/* ---------------- dimension table ---------------- */
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:30px 0 12px}
+.bar h2{font-size:19px}
+.dims{display:flex;gap:1px;background:var(--rule-2);border:1px solid var(--rule-2);border-radius:3px;
+  overflow:hidden;margin-inline-start:auto}
+.dims button{border:0;background:var(--panel);padding:7px 14px;font-size:13px;cursor:pointer;
+  color:var(--ink-2)}
+.dims button:hover{background:var(--hover)}
+.dims button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:500}
+.crumb{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:13px;margin-bottom:10px;
+  color:var(--ink-3)}
+.crumb button{border:0;background:none;padding:0;cursor:pointer;color:var(--accent);
+  text-decoration:underline;text-underline-offset:2px}
+.crumb .sep{color:var(--rule-2)}
+.crumb .now{color:var(--ink);font-weight:600}
+
+table{width:100%;border-collapse:collapse;background:var(--panel);font-size:13.5px}
+.tablewrap{border:1px solid var(--rule);overflow-x:auto}
+th{text-align:start;font-weight:600;font-size:11.5px;letter-spacing:.06em;color:var(--ink-3);
+  padding:9px 14px;border-bottom:1px solid var(--rule);background:var(--sunk);white-space:nowrap;
+  vertical-align:bottom}
+th .sub{font-weight:400;letter-spacing:0;font-size:10.5px;color:var(--ink-3);opacity:.85;margin-top:2px}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.num{text-align:end;font-family:var(--mono);font-variant-numeric:tabular-nums}
+th.num{text-align:end}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--hover)}
+td .name{font-weight:500}
+td .sub{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.rate{display:flex;align-items:center;gap:9px;justify-content:flex-end}
+.rate .track{width:64px;height:5px;background:var(--sunk);position:relative;flex:0 0 auto}
+.rate .fill{position:absolute;inset-block:0;inset-inline-start:0;background:var(--accent)}
+.rate .fill.low{background:var(--gap)}
+.rate .p{font-family:var(--mono);font-size:12.5px;width:42px;text-align:end}
+td.g-pos{color:var(--gap)} td.g-neg{color:var(--owed)}
+.chip{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:2px;white-space:nowrap}
+.c-ok{background:var(--ok-soft);color:var(--ok)}
+.c-gap{background:var(--gap-soft);color:var(--gap)}
+.c-owed{background:var(--owed-soft);color:var(--owed)}
+.c-expo{background:var(--expo-soft);color:var(--expo)}
+.foot{padding:10px 14px;font-size:12px;color:var(--ink-3);background:var(--sunk);
+  border-top:1px solid var(--rule)}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-3);font-size:13.5px}
+
+/* ---------------- exceptions ---------------- */
+.exc{border:1px solid var(--rule);background:var(--panel)}
+.exrow{display:grid;grid-template-columns:132px 10px 1fr auto;gap:14px;align-items:center;
+  width:100%;padding:13px 16px;border:0;background:none;border-bottom:1px solid var(--rule);
+  text-align:start;cursor:pointer}
+.exrow:last-child{border-bottom:0}
+.exrow:hover{background:var(--hover)}
+.exrow .amt{font-family:var(--mono);font-size:15.5px;font-variant-numeric:tabular-nums;text-align:end}
+.exrow .dot{width:10px;height:10px;border-radius:50%}
+.exrow .he{display:block;font-size:14px}
+.exrow .why{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.exrow .cnt{font-size:12.5px;color:var(--ink-3);font-family:var(--mono)}
+.k-recoverable .dot{background:var(--gap)} .k-recoverable .amt{color:var(--gap)}
+.k-owed .dot{background:var(--owed)} .k-owed .amt{color:var(--owed)}
+.k-exposure .dot{background:var(--expo)} .k-exposure .amt{color:var(--expo)}
+.exhead{padding:11px 16px;background:var(--sunk);border-bottom:1px solid var(--rule);
+  font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);display:flex;justify-content:space-between}
+
+/* ---------------- filters ---------------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--ink-3)}
+.filters select,.filters input{font:inherit;font-size:13px;padding:7px 9px;background:var(--panel);
+  border:1px solid var(--rule-2);border-radius:2px;color:var(--ink);min-width:132px}
+.filters select:focus,.filters input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.reset{align-self:flex-end;border:1px solid var(--rule-2);background:var(--panel);padding:7px 12px;
+  border-radius:2px;cursor:pointer;font-size:13px;color:var(--ink-2)}
+.reset:hover{background:var(--hover)}
+
+/* ---------------- investigation ---------------- */
+.back{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;font-size:13.5px;
+  text-decoration:underline;text-underline-offset:2px;margin-bottom:14px;display:inline-block}
+.ep{border:1px solid var(--rule);background:var(--panel)}
+.ephead{padding:18px 22px;border-bottom:1px solid var(--rule);display:flex;
+  justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start}
+.ephead .id{font-family:var(--mono);font-size:20px}
+.ephead .meta{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.ephead .v{text-align:end}
+.ephead .v .a{font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums}
+.ephead .v .l{font-size:12px;color:var(--ink-3);margin-top:2px}
+
+.chain{display:grid;grid-template-columns:repeat(4,1fr);padding:20px 22px 4px}
+.st{position:relative;padding-inline-end:16px}
+.st:last-child{padding-inline-end:0}
+.st::after{content:"";position:absolute;top:34px;inset-inline-end:0;width:16px;height:1px;
+  background:var(--rule-2)}
+.st:last-child::after{display:none}
+.st .cap{font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:9px;
+  padding-bottom:7px;border-bottom:1px solid var(--rule)}
+.card{border:1px solid var(--rule);padding:11px 12px;font-size:12.5px;background:var(--panel)}
+.card + .card{margin-top:8px}
+.card .h{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-bottom:4px}
+.card .ttl{font-weight:500;margin-bottom:6px}
+.card .l{display:flex;justify-content:space-between;gap:10px;color:var(--ink-3);line-height:1.55}
+.card .l b{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);
+  font-weight:400;direction:ltr}
+.card.bundled{background:var(--sunk);border-style:dashed}
+.card .tag{display:inline-block;margin-top:7px;font-size:11px;padding:1px 7px;border-radius:2px}
+.bad{margin-top:7px;padding:5px 8px;background:var(--gap-soft);color:var(--gap);font-size:11.5px;
+  border-inline-start:2px solid var(--gap)}
+.broken{border:1px dashed var(--rule-2);padding:16px 12px;text-align:center;font-size:12.5px;
+  color:var(--ink-3);background:repeating-linear-gradient(135deg,transparent 0 6px,var(--sunk) 6px 12px)}
+.broken b{display:block;color:var(--ink-2);margin-bottom:3px;font-weight:600}
+.rail{margin:16px 22px 0;padding:13px 16px;background:var(--sunk);border:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.rail .law{font-size:12.5px;color:var(--ink-2);max-width:62ch}
+.rail .law code{font-family:var(--mono);font-size:12px;color:var(--ink)}
+.rail .sums{display:flex;gap:24px}
+.rail .sums .l{font-size:11.5px;color:var(--ink-3)}
+.rail .sums .v{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums;text-align:end}
+.findings{padding:16px 22px 22px}
+.finding{border-inline-start:3px solid var(--rule-2);padding-inline-start:12px;margin-top:13px}
+.finding:first-child{margin-top:0}
+.finding .t{font-size:13.5px;font-weight:600}
+.finding .t .code{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:400;
+  margin-inline-start:7px}
+.finding .d{font-size:13px;color:var(--ink-2);margin-top:3px;max-width:74ch}
+.f-recoverable{border-inline-start-color:var(--gap)}
+.f-owed{border-inline-start-color:var(--owed)}
+.f-exposure{border-inline-start-color:var(--expo)}
+.clean{padding:16px 22px 22px;font-size:13px;color:var(--ink-2)}
+
+/* ---------------- open questions ---------------- */
+.qs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule)}
+.q{background:var(--panel);padding:18px}
+.q .n{font-family:var(--mono);font-size:11.5px;color:var(--open);margin-bottom:8px}
+.q .t{font-size:14.5px;font-weight:600;line-height:1.35}
+.q p{font-size:12.5px;color:var(--ink-2);margin:8px 0 0}
+.q .cost{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:12px;
+  color:var(--ink-3)}
+.q .cost b{font-family:var(--mono);color:var(--open);font-weight:500}
+.note{font-size:13px;color:var(--ink-2);max-width:76ch;margin:0 0 16px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-size:12px;
+  color:var(--ink-3);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+footer code{font-family:var(--mono);font-size:11px}
+button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:1000px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .qs{grid-template-columns:1fr}
+  .chain{grid-template-columns:1fr;gap:14px}
+  .st{padding-inline-end:0}.st::after{display:none}
+  .dims{margin-inline-start:0}
+}
+/* ---------------- case investigation ---------------- */
+.casenav{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.casenav .pos{font-size:13px;color:var(--ink-3);font-family:var(--mono)}
+.casenav .step{border:1px solid var(--rule-2);background:var(--panel);padding:5px 12px;
+  border-radius:2px;cursor:pointer;font-size:13px;color:var(--ink-2)}
+.casenav .step:hover:not(:disabled){background:var(--hover);color:var(--ink)}
+.casenav .step:disabled{opacity:.4;cursor:default}
+.casenav .in{font-size:13px;color:var(--ink-3)}
+.ephead .status{margin-top:8px}
+.story{padding:16px 22px;border-bottom:1px solid var(--rule);background:var(--sunk)}
+.story .lbl{font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:6px}
+.story p{margin:0;font-size:14px;line-height:1.65;max-width:84ch}
+.story b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+
+.split2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0;margin-top:18px;
+  border-top:1px solid var(--rule)}
+.split2 > .left{border-inline-end:1px solid var(--rule);min-width:0}
+.tl{padding:18px 22px}
+.tl .lbl{font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:14px}
+.ev{display:grid;grid-template-columns:78px 14px 1fr;gap:12px;align-items:start;padding-bottom:16px;
+  position:relative}
+.ev:last-child{padding-bottom:0}
+.ev .when{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:end;padding-top:1px;
+  font-variant-numeric:tabular-nums}
+.ev .when .gapdays{display:block;font-size:10.5px;color:var(--ink-3);opacity:.75}
+.ev .spine{position:relative;height:100%}
+.ev .spine::before{content:"";position:absolute;top:5px;inset-inline-start:5px;width:1px;bottom:-16px;
+  background:var(--rule)}
+.ev:last-child .spine::before{display:none}
+.ev .node{position:absolute;top:4px;inset-inline-start:1px;width:9px;height:9px;border-radius:50%;
+  background:var(--panel);border:2px solid var(--rule-2)}
+.ev.assuta .node{border-color:var(--accent)}
+.ev.payer .node{border-color:var(--expo)}
+.ev.rej .node{border-color:var(--gap);background:var(--gap)}
+.ev.rej .what{color:var(--gap)}
+.ev .what{font-size:13.5px;line-height:1.45}
+.ev .what .who{font-size:11px;padding:1px 6px;border-radius:2px;margin-inline-start:7px;
+  background:var(--sunk);color:var(--ink-3);white-space:nowrap}
+.ev .det{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.ev .det .mono{color:var(--ink-2)}
+.ev .amt{font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums;margin-top:2px}
+.ev .flagline{margin-top:6px;padding:5px 8px;background:var(--gap-soft);color:var(--gap);
+  font-size:11.5px;border-inline-start:2px solid var(--gap)}
+
+.actions{padding:18px 20px;background:var(--panel)}
+.actions .lbl{font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:12px}
+.act{border:1px solid var(--rule);padding:13px 14px;margin-bottom:12px}
+.act:last-child{margin-bottom:0}
+.act .h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.act .h .t{font-size:13.5px;font-weight:600;line-height:1.35}
+.act .h .a{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.act .do{font-size:13px;color:var(--ink-2);margin-top:7px;line-height:1.5}
+.act .ev-src{margin-top:9px;padding-top:8px;border-top:1px dashed var(--rule);font-size:11px;
+  color:var(--ink-3)}
+.act .ev-src .mono{color:var(--ink-2);margin-inline-end:6px}
+.act .code{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);display:block;margin-top:5px}
+.a-recoverable{border-inline-start:3px solid var(--gap)}
+.a-owed{border-inline-start:3px solid var(--owed)}
+.a-exposure{border-inline-start:3px solid var(--expo)}
+.a-none{border-inline-start:3px solid var(--ok)}
+.act.none .h .t{font-weight:500}
+@media (max-width:1000px){ .split2{grid-template-columns:1fr} .split2 > .left{border-inline-end:0;
+  border-bottom:1px solid var(--rule)} }
+</style>
+
+<div dir="rtl" lang="he" class="app">
+
+<header class="top">
+  <div class="brandrow">
+    <h1>מסך פערי הגבייה</h1>
+    <span class="sub">טופס 17 · התאמה בין שירות, התחייבות, דרישה ותשלום</span>
+    <span class="demo"><b>נתוני הדגמה</b> — סינתטיים, לא נתוני אסותא או קופה אמיתיים</span>
+  </div>
+
+  <div class="searchbar">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle>
+      <line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+    <input id="q" type="search" autocomplete="off"
+           placeholder="חפש מטופל, טופס 17, דרישה, סוג טיפול, קופה או אתר…"
+           aria-label="חיפוש חופשי">
+    <button class="clear" id="qclear" type="button" aria-label="נקה חיפוש" hidden>×</button>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-sum" data-view="sum" aria-selected="true">סיכום</button>
+    <button class="tab" role="tab" id="t-search" data-view="search" aria-selected="false">חיפוש<span class="cnt" id="n-search"></span></button>
+    <button class="tab" role="tab" id="t-exc" data-view="exc" aria-selected="false">חריגות<span class="cnt" id="n-exc"></span></button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ summary ============ -->
+<section id="v-sum">
+  <div class="kpis" id="kpis"></div>
+  <div class="strip" id="strip"></div>
+
+  <div class="bar">
+    <h2>מאיפה הכסף לא חוזר</h2>
+    <div class="dims" id="dims" role="group" aria-label="חתך"></div>
+  </div>
+  <div class="crumb" id="crumb"></div>
+  <div class="tablewrap"><table id="dimtable"></table></div>
+</section>
+
+<!-- ============ search ============ -->
+<section id="v-search" hidden>
+  <div class="filters" id="filters"></div>
+  <div class="tablewrap"><table id="restable"></table></div>
+</section>
+
+<!-- ============ exceptions ============ -->
+<section id="v-exc" hidden>
+  <p class="note">כל שורה היא חוק בדיקה. הסכום הוא מה שנשאר אחרי שהמקרים שיש להם הסבר
+     נפסלו — והמספר שנפסל מופיע לצד החוק, כי הוא מה שקובע אם אפשר לסמוך על הדוח.</p>
+  <div class="exc" id="exlist"></div>
+
+  <div class="bar"><h2>מה שהעמודות לא עונות</h2></div>
+  <p class="note">על העמודות המובנות לבדן, אנליסט עם SQL מגיע לכל מספר שלמעלה.
+     שלוש השאלות האלה הן מה שנשאר, והן לא מוכרעות כאן.</p>
+  <div class="qs" id="qs"></div>
+</section>
+
+<!-- ============ investigation ============ -->
+<section id="v-ep" hidden>
+  <div class="casenav" id="casenav"></div>
+  <div class="ep" id="epbox"></div>
+</section>
+
+</main>
+
+<footer>
+  <span>נבנה מתוך <code>demos/assuta-form17-v1</code> — גנרטור עם זרע קבוע, חוקים דטרמיניסטיים, בלי מודל ובלי רשת.</span>
+  <span id="fcounts"></span>
+</footer>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+"use strict";
+var D = window.__ASSUTA__;
+var EPS = D.episodes;
+
+var PAYER = {CLALIT:"כללית", MACCABI:"מכבי", MEUHEDET:"מאוחדת", LEUMIT:"לאומית"};
+var SITE  = {"AS-TA":"אסותא תל אביב","AS-HAI":"אסותא חיפה","AS-RAM":"אסותא רמת החייל",
+             "AS-RIS":"אסותא ראשון לציון"};
+var MON = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+var KINDHE = {recoverable:"ניתן לגבייה", owed:"חוב לקופה", exposure:"חשיפה בלי כיסוי"};
+
+var WHY = {
+ L1_unbilled:"השירות בוצע ותועד, ולא הוגשה עליו שום דרישה.",
+ L2_underbilled:"הדרישה הוגשה מתחת למחיר שהחוזה שבתוקף ביום השירות מזכה בו. הקופה שילמה את מה שנדרש, ולכן שום דבר בתשלום לא נראה חריג.",
+ L3_underpaid_collectible:"הקופה שילמה פחות מהדרישה, ובדיקת ההתחייבות מראה שהניכוי אינו מוצדק.",
+ L5_failed_recovery:"הדרישה נדחתה מחוסר התחייבות, ההתחייבות התקפה הונפקה אחרי הדחייה, ואיש לא הגיש מחדש.",
+ L4c_units_over_approval:"בוצעו יותר יחידות מכפי שאושרו. ההפרש אמיתי, אבל אינו ניתן לגבייה מהקופה.",
+ L4a_outside_validity:"השירות ניתן מחוץ לחלון התוקף של ההתחייבות. שולם במלואו — חשיפה בביקורת, לא פער כספי.",
+ L4b_wrong_provider:"ההתחייבות מפרטת אתר אחר מזה שביצע. שולם במלואו; אותה חשיפה.",
+ L6a_duplicate_claims:"אותו שירות נדרש פעמיים ושולם פעמיים. העודף שייך לקופה.",
+ L6b_claim_without_service:"הוגשה דרישה שאין מאחוריה שום שירות מתועד.",
+ L6c_overbilled:"נדרש ושולם מעל מחיר החוזה.",
+ L6d_bundled_service_billed:"שירות שכלול במחיר החבילה חויב בנפרד ושולם בנפרד."
+};
+var EXPL = {
+ L1_unbilled:"72 שירותים נראים כך · 58 נפסלו: אקו לב שכלול בחבילת הקטרקט",
+ L3_underpaid_collectible:"35 הפחתות נוספות נבדקו ונמצאו מוצדקות",
+ L6c_overbilled:"30 מקרים נוספים נראים כך · חיוב ברוטו מול תשלום נטו"
+};
+
+var FAM = {}; D.families.forEach(function(f){ FAM[f.id] = f; });
+var SVCNAME = {};
+EPS.forEach(function(e){ if(e.sv && !SVCNAME[e.sv]) SVCNAME[e.sv] = e.sn; });
+
+function nis(x,dp){ dp = dp===undefined?2:dp;
+  return new Intl.NumberFormat("he-IL",{minimumFractionDigits:dp,maximumFractionDigits:dp}).format(x); }
+function money(x){ return nis(Math.round(x*100)/100); }
+function dt(s){ if(!s) return "—"; var p=s.split("-"); return p[2]+"."+p[1]+"."+p[0]; }
+function monHe(k){ var p=k.split("-"); return MON[parseInt(p[1],10)-1]+" "+p[0]; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function el(t,c,h){ var e=document.createElement(t); if(c)e.className=c; if(h!==undefined)e.innerHTML=h; return e; }
+
+var DIM = {
+  payer:{he:"קופה משלמת", col:"קופה משלמת", get:function(e){return e.py;}, lab:function(k){return PAYER[k]||k;}, sub:function(){return "";}},
+  site: {he:"בית חולים",  col:"בית חולים",  get:function(e){return e.st;}, lab:function(k){return SITE[k]||k;},  sub:function(k){return k;}},
+  svc:  {he:"סוג שירות",  col:"סוג שירות",  get:function(e){return e.sv;}, lab:function(k){return SVCNAME[k]||k;}, sub:function(k){return k;}},
+  per:  {he:"תקופה",      col:"חודש",       get:function(e){return e.dt.slice(0,7);}, lab:monHe, sub:function(){return "";}}
+};
+var DIMKEYS = ["site","payer","svc","per"];
+
+var S = { view:"sum", dim:"payer", path:[], law:null, q:"",
+          f:{payer:"",site:"",svc:"",status:"",from:"",to:""} };
+
+/* ---------- episode helpers ---------- */
+function kindOf(e){
+  if(e.gap > 0.004) return "gap";
+  if(e.gap < -0.004) return "owed";
+  if(e.laws.length) return "expo";
+  return "ok";
+}
+var CHIP = {gap:["c-gap","פער לגבייה"], owed:["c-owed","חוב לקופה"],
+            expo:["c-expo","חשיפה"], ok:["c-ok","תקין"]};
+
+var HAY = {};
+EPS.forEach(function(e){
+  var t = [e.id, e.pt, e.py, PAYER[e.py]||"", e.st, SITE[e.st]||"", e.sv, e.sn];
+  e.services.forEach(function(s){ t.push(s.id, s.code, s.desc, s.phys); });
+  e.auths.forEach(function(a){ t.push(a.id, a.code, a.desc); });
+  e.claims.forEach(function(c){ t.push(c.id, c.code, c.status);
+    c.remits.forEach(function(r){ t.push(r.reason, r.reason_he); }); });
+  HAY[e.id] = t.join(" ").toLowerCase();
+});
+
+function matches(e){
+  if(S.q){ var terms = S.q.toLowerCase().split(/\s+/).filter(Boolean);
+    for(var i=0;i<terms.length;i++) if(HAY[e.id].indexOf(terms[i]) < 0) return false; }
+  var f = S.f;
+  if(f.payer && e.py !== f.payer) return false;
+  if(f.site && e.st !== f.site) return false;
+  if(f.svc && e.sv !== f.svc) return false;
+  if(f.from && e.dt < f.from) return false;
+  if(f.to && e.dt > f.to) return false;
+  if(f.status && kindOf(e) !== f.status) return false;
+  if(S.law && e.laws.indexOf(S.law) < 0) return false;
+  return true;
+}
+function searchResults(){ return EPS.filter(matches); }
+
+/* ---------- KPI ---------- */
+var TOT = EPS.reduce(function(a,e){
+  a.exp += e.exp; a.paid += e.paid; a.rec += e.rec;
+  if(e.gap > 0.004) a.under += e.gap;
+  if(e.gap < -0.004) a.over += -e.gap;
+  return a;
+}, {exp:0,paid:0,rec:0,under:0,over:0});
+
+function renderKpis(){
+  var R = D.residual;
+  var K = [
+    {c:"",    k:"הכנסה צפויה לפי החוזים", v:TOT.exp,   n:EPS.length+" אפיזודות · "+nis(D.counts.services,0)+" שירותים"},
+    {c:"",    k:"התקבל בפועל",            v:TOT.paid,  n:nis(TOT.paid/TOT.exp*100,1)+"% מהצפוי"},
+    {c:"gap", k:"פער פתוח",               v:TOT.under, n:R.under_collected.n+" אפיזודות בגירעון"},
+    {c:"rec", k:"סכום בר־השבה",           v:TOT.rec,   n:"ניתן לדרוש מהקופות היום"}
+  ];
+  var h = document.getElementById("kpis"); h.innerHTML = "";
+  K.forEach(function(x){
+    h.appendChild(el("div","kpi "+x.c,
+      '<div class="k">'+x.k+'</div><div class="v">'+money(x.v)+'<span class="c">₪</span></div>'+
+      '<div class="n">'+x.n+'</div>'));
+  });
+  document.getElementById("strip").innerHTML =
+    '<span>נסגרו במלואן <b>'+D.residual.gap_free_episodes+'</b></span>'+
+    '<span>עם פער <b>'+(D.residual.under_collected.n+D.residual.over_collected.n)+'</b></span>'+
+    '<span>לא מוסבר בשום חוק <b>'+D.residual.unexplained.n+'</b></span>'+
+    '<span>נגבה ביתר ומוחזר לקופות <b>'+money(TOT.over)+' ₪</b></span>';
+}
+
+/* ---------- dimension order and drill ---------- */
+function order(){
+  var rest = DIMKEYS.filter(function(k){ return k !== S.dim; });
+  return [S.dim].concat(rest);
+}
+function scoped(){
+  return EPS.filter(function(e){
+    for(var i=0;i<S.path.length;i++){
+      var p = S.path[i];
+      if(DIM[p.dim].get(e) !== p.key) return false;
+    }
+    return true;
+  });
+}
+function agg(rows, dim){
+  var g = {};
+  rows.forEach(function(e){
+    var k = DIM[dim].get(e);
+    var a = g[k] || (g[k] = {k:k, n:0, sv:0, exp:0, paid:0, rec:0});
+    a.n++; a.sv += e.services.length; a.exp += e.exp; a.paid += e.paid; a.rec += e.rec;
+  });
+  return Object.keys(g).map(function(k){ return g[k]; });
+}
+
+function renderDims(){
+  var h = document.getElementById("dims"); h.innerHTML = "";
+  DIMKEYS.forEach(function(k){
+    var b = el("button", null, "לפי "+DIM[k].he);
+    b.type = "button";
+    b.setAttribute("aria-pressed", S.dim===k ? "true" : "false");
+    b.addEventListener("click", function(){ S.dim = k; S.path = []; renderSummary(); });
+    h.appendChild(b);
+  });
+}
+function renderCrumb(){
+  var c = document.getElementById("crumb"); c.innerHTML = "";
+  var root = el("button", null, "כל הפעילות"); root.type = "button";
+  root.addEventListener("click", function(){ S.path = []; renderSummary(); });
+  c.appendChild(root);
+  S.path.forEach(function(p, i){
+    c.appendChild(el("span","sep","›"));
+    var last = i === S.path.length - 1;
+    if(last){ c.appendChild(el("span","now", esc(DIM[p.dim].lab(p.key)))); }
+    else {
+      var b = el("button", null, esc(DIM[p.dim].lab(p.key))); b.type = "button";
+      b.addEventListener("click", function(){ S.path = S.path.slice(0, i+1); renderSummary(); });
+      c.appendChild(b);
+    }
+  });
+  var nxt = order()[S.path.length];
+  c.appendChild(el("span","sep","›"));
+  c.appendChild(el("span", null, nxt ? "פירוט לפי "+DIM[nxt].he : "אירועים"));
+}
+
+var RATE_FLOOR = 90;   /* every rate here sits above 97%; a 0-100 bar draws four identical bars */
+function rateCell(paid, exp){
+  var p = exp > 0 ? paid/exp*100 : 100;
+  var w = Math.max(0, Math.min(100, (p - RATE_FLOOR) / (100 - RATE_FLOOR) * 100));
+  return '<div class="rate"><span class="track"><span class="fill'+(p<97?" low":"")+
+    '" style="width:'+w.toFixed(1)+'%"></span></span><span class="p">'+p.toFixed(1)+'%</span></div>';
+}
+
+function renderDimTable(){
+  var t = document.getElementById("dimtable");
+  var rows = scoped();
+  var dim = order()[S.path.length];
+  t.innerHTML = "";
+
+  if(!dim){ renderEpisodeTable(t, rows, "חזרה לסיכום"); return; }
+
+  var d = DIM[dim];
+  var data = agg(rows, dim).sort(function(a,b){ return (b.exp-b.paid) - (a.exp-a.paid); });
+  var head = '<thead><tr><th>'+d.col+'</th><th class="num">שירותים</th><th class="num">צפוי</th>'+
+    '<th class="num">התקבל</th>'+
+    '<th class="num">פער<div class="sub">צפוי פחות התקבל</div></th>'+
+    '<th class="num">בר־השבה<div class="sub">ניתן לדרוש מהקופה</div></th>'+
+    '<th class="num">שיעור גבייה<div class="sub">סקאלה '+RATE_FLOOR+'%–100%</div></th></tr></thead>';
+  var body = "";
+  data.forEach(function(a){
+    var gap = a.exp - a.paid;
+    var sub = d.sub(a.k);
+    body += '<tr class="click" tabindex="0" data-key="'+esc(a.k)+'">'+
+      '<td><div class="name">'+esc(d.lab(a.k))+'</div>'+
+        (sub ? '<div class="sub mono">'+esc(sub)+'</div>' : '')+'</td>'+
+      '<td class="num">'+nis(a.sv,0)+'</td>'+
+      '<td class="num">'+money(a.exp)+'</td>'+
+      '<td class="num">'+money(a.paid)+'</td>'+
+      '<td class="num '+(gap>0.004?"g-pos":(gap<-0.004?"g-neg":""))+'">'+money(gap)+'</td>'+
+      '<td class="num">'+(a.rec>0.004?money(a.rec):"—")+'</td>'+
+      '<td class="num">'+rateCell(a.paid, a.exp)+'</td></tr>';
+  });
+  var tot = data.reduce(function(s,a){ s.sv+=a.sv;s.exp+=a.exp;s.paid+=a.paid;s.rec+=a.rec; return s; },
+                        {sv:0,exp:0,paid:0,rec:0});
+  body += '<tr style="background:var(--sunk);font-weight:600"><td>סך הכל</td>'+
+    '<td class="num">'+nis(tot.sv,0)+'</td><td class="num">'+money(tot.exp)+'</td>'+
+    '<td class="num">'+money(tot.paid)+'</td>'+
+    '<td class="num '+((tot.exp-tot.paid)>0?"g-pos":"")+'">'+money(tot.exp-tot.paid)+'</td>'+
+    '<td class="num">'+money(tot.rec)+'</td><td class="num">'+rateCell(tot.paid,tot.exp)+'</td></tr>';
+  t.innerHTML = head + '<tbody>' + body + '</tbody>';
+
+  Array.prototype.forEach.call(t.querySelectorAll("tr.click"), function(tr){
+    var go = function(){ S.path = S.path.concat([{dim:dim, key:tr.dataset.key}]); renderSummary(); };
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); go(); } });
+  });
+}
+
+function renderEpisodeTable(t, rows, backLabel){
+  var head = '<thead><tr><th>אפיזודה</th><th>מטופל</th><th>תאריך</th><th>קופה</th>'+
+    '<th>בית חולים</th><th>סוג שירות</th><th class="num">צפוי</th><th class="num">התקבל</th>'+
+    '<th class="num">פער</th><th>סטטוס</th></tr></thead>';
+  var shown = rows.slice(0, 250);
+  var body = "";
+  shown.forEach(function(e){
+    var k = kindOf(e);
+    body += '<tr class="click" tabindex="0" data-ep="'+e.id+'">'+
+      '<td class="mono">'+e.id+'</td><td class="mono">'+e.pt+'</td>'+
+      '<td class="mono">'+dt(e.dt)+'</td><td>'+esc(PAYER[e.py]||e.py)+'</td>'+
+      '<td>'+esc(SITE[e.st]||e.st)+'</td><td>'+esc(e.sn)+'</td>'+
+      '<td class="num">'+money(e.exp)+'</td><td class="num">'+money(e.paid)+'</td>'+
+      '<td class="num '+(e.gap>0.004?"g-pos":(e.gap<-0.004?"g-neg":""))+'">'+money(e.gap)+'</td>'+
+      '<td><span class="chip '+CHIP[k][0]+'">'+CHIP[k][1]+'</span></td></tr>';
+  });
+  if(!shown.length) body = '<tr><td colspan="10"><div class="empty">אין אירועים שעונים לחיפוש.</div></td></tr>';
+  t.innerHTML = head + '<tbody>' + body + '</tbody>';
+  if(rows.length > shown.length){
+    var f = el("tfoot", null, '<tr><td colspan="10"><div class="foot">מוצגים '+shown.length+
+      ' מתוך '+nis(rows.length,0)+' אירועים. צמצם עם החיפוש או הפילטרים.</div></td></tr>');
+    t.appendChild(f);
+  }
+  Array.prototype.forEach.call(t.querySelectorAll("tr.click"), function(tr){
+    var go = function(){ openEpisode(tr.dataset.ep, rows); };
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); go(); } });
+  });
+}
+
+function renderSummary(){ renderDims(); renderCrumb(); renderDimTable(); }
+
+/* ---------- filters + search view ---------- */
+function opts(pairs, cur){
+  return pairs.map(function(p){
+    return '<option value="'+esc(p[0])+'"'+(p[0]===cur?" selected":"")+'>'+esc(p[1])+'</option>';
+  }).join("");
+}
+function uniq(fn){
+  var s = {}; EPS.forEach(function(e){ var v = fn(e); if(v) s[v]=1; });
+  return Object.keys(s).sort();
+}
+function renderFilters(){
+  var h = document.getElementById("filters"); h.innerHTML = "";
+  var defs = [
+    {id:"payer", he:"קופה", list:[["","כל הקופות"]].concat(uniq(function(e){return e.py;}).map(function(k){return [k, PAYER[k]||k];}))},
+    {id:"site",  he:"בית חולים", list:[["","כל האתרים"]].concat(uniq(function(e){return e.st;}).map(function(k){return [k, SITE[k]||k];}))},
+    {id:"svc",   he:"סוג טיפול", list:[["","כל הטיפולים"]].concat(uniq(function(e){return e.sv;}).map(function(k){return [k, SVCNAME[k]||k];}))},
+    {id:"status",he:"סטטוס", list:[["","הכל"],["gap","פער לגבייה"],["owed","חוב לקופה"],["expo","חשיפה"],["ok","תקין"]]}
+  ];
+  defs.forEach(function(d){
+    var l = el("label", null, d.he + '<select id="f-'+d.id+'">'+opts(d.list, S.f[d.id])+'</select>');
+    h.appendChild(l);
+    l.querySelector("select").addEventListener("change", function(ev){
+      S.f[d.id] = ev.target.value; renderSearch();
+    });
+  });
+  [["from","מתאריך"],["to","עד תאריך"]].forEach(function(p){
+    var l = el("label", null, p[1] + '<input type="date" id="f-'+p[0]+'" value="'+S.f[p[0]]+'">');
+    h.appendChild(l);
+    l.querySelector("input").addEventListener("change", function(ev){
+      S.f[p[0]] = ev.target.value; renderSearch();
+    });
+  });
+  var r = el("button","reset","נקה הכל"); r.type = "button";
+  r.addEventListener("click", function(){
+    S.f = {payer:"",site:"",svc:"",status:"",from:"",to:""}; S.law = null; S.q = "";
+    document.getElementById("q").value = ""; document.getElementById("qclear").hidden = true;
+    renderFilters(); renderSearch();
+  });
+  h.appendChild(r);
+
+  if(S.law){
+    var c = el("label", null, "חוק"+
+      '<button class="reset" style="align-self:auto" type="button">'+esc(FAM[S.law].he)+' ×</button>');
+    c.querySelector("button").addEventListener("click", function(){ S.law = null; renderFilters(); renderSearch(); });
+    h.insertBefore(c, h.firstChild);
+  }
+}
+function renderSearch(){
+  var rows = searchResults();
+  renderEpisodeTable(document.getElementById("restable"), rows);
+  document.getElementById("n-search").textContent = nis(rows.length,0);
+}
+
+/* ---------- exceptions ---------- */
+function renderExceptions(){
+  var h = document.getElementById("exlist"); h.innerHTML = "";
+  var order = ["recoverable","owed","exposure"];
+  order.forEach(function(k){
+    var fams = D.families.filter(function(f){ return f.kind===k; })
+                         .sort(function(a,b){ return b.amount - a.amount; });
+    var tot = fams.reduce(function(s,f){ return s+f.amount; },0);
+    h.appendChild(el("div","exhead",'<span>'+KINDHE[k]+'</span><span class="mono">'+money(tot)+' ₪</span>'));
+    fams.forEach(function(f){
+      var b = el("button","exrow k-"+k); b.type = "button";
+      b.innerHTML = '<span class="amt">'+money(f.amount)+' ₪</span><span class="dot"></span>'+
+        '<span><span class="he">'+esc(f.he)+'</span>'+
+        (EXPL[f.id] ? '<span class="why">'+esc(EXPL[f.id])+'</span>' : '')+'</span>'+
+        '<span class="cnt">'+f.n+' מקרים</span>';
+      b.addEventListener("click", function(){
+        S.law = f.id; S.f = {payer:"",site:"",svc:"",status:"",from:"",to:""};
+        renderFilters(); renderSearch(); setView("search");
+      });
+      h.appendChild(b);
+    });
+  });
+  document.getElementById("n-exc").textContent =
+    D.families.reduce(function(s,f){ return s+f.n; },0);
+
+  var q = document.getElementById("qs");
+  q.innerHTML = "";
+  var QS = [
+    {t:"כלל החבילה חי במשפט אחד בעברית",
+     p:"מחיר ניתוח הקטרקט כולל אקו לב טרום־ניתוחי. המשפט הזה קיים רק בשדה ההערות של החוזה, ובשום עמודה מובנית.",
+     c:"בלעדיו משפחת \"לא חויב\" קופצת מ־14 ל־<b>72</b> מקרים, והדוח מאבד את ערכו."},
+    {t:"36 דרישות בלי קוד קופה",
+     p:"מכבי לא פרסמה קוד לאולטרסאונד שד, מאוחדת לא פרסמה קוד לאקו לב. הקישור בין הדרישה לטופס 17 עובר דרך הניסוח העברי בלבד — והטופס כותב \"MRI ברך ימין\" במקום \"MRI ברך\".",
+     c:"<b>"+money(D.open.no_code.amount)+" ₪</b> תלויים בהכרעה על זהות, לא על חיבור טבלאות."},
+    {t:"מה אומר קוד סיבה",
+     p:"הקוד Q-EXCEED מופיע 11 פעמים. בשישה מהם הקופה טועה והכסף ניתן לגבייה; בחמישה הקופה צודקת ואסותא נתנה טיפול שלא אושר. הקוד זהה בשני המקרים.",
+     c:"אותה מחרוזת, שתי מסקנות הפוכות. <b>11</b> מקרים."}
+  ];
+  QS.forEach(function(x,i){
+    q.appendChild(el("div","q",'<div class="n">שאלה '+(i+1)+'</div><div class="t">'+x.t+'</div>'+
+      '<p>'+x.p+'</p><div class="cost">'+x.c+'</div>'));
+  });
+}
+
+/* ---------- investigation ---------- */
+var STATION = ["שירות שבוצע","טופס 17","דרישת תשלום","תשלום בפועל"];
+function line(k,v){ return '<div class="l"><span>'+k+'</span><b>'+v+'</b></div>'; }
+function station(cap, cards, emptyMsg){
+  var s = el("div","st");
+  s.appendChild(el("div","cap",cap));
+  if(!cards.length) s.appendChild(el("div","broken",'<b>'+emptyMsg+'</b>התחנה ריקה. השבר עצמו הוא הממצא.'));
+  else cards.forEach(function(c){ s.appendChild(c); });
+  return s;
+}
+/* the fixture has no "today"; the last dated row in the export is the reference point */
+var NOW = (function(){
+  var mx = "";
+  EPS.forEach(function(e){
+    if(e.dt > mx) mx = e.dt;
+    e.claims.forEach(function(c){
+      if(c.submit > mx) mx = c.submit;
+      c.remits.forEach(function(r){ if(r.date > mx) mx = r.date; });
+    });
+  });
+  return mx;
+})();
+function days(a, b){
+  return Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
+}
+
+/* ---------- what happened, in order ---------- */
+function timeline(e){
+  var ev = [];
+  e.services.forEach(function(s){
+    ev.push({d:s.date, who:"assuta", w:"השירות בוצע",
+      det:'<span class="mono">'+s.id+'</span> · '+esc(s.desc)+' · '+s.units+' יחידות · מבצע <span class="mono">'+s.phys+'</span>',
+      tag:"אסותא", bundled:s.bundled});
+  });
+  e.auths.forEach(function(a){
+    ev.push({d:a.issued, who:"payer", w:"טופס 17 הונפק",
+      det:'<span class="mono">'+a.id+'</span> · '+esc(a.desc)+' · '+a.units+' יחידות · תוקף '+dt(a.from)+' – '+dt(a.to)+
+          ' · אתר '+esc(SITE[a.site]||a.site),
+      tag:"קופה", auth:a});
+  });
+  e.claims.forEach(function(c){
+    ev.push({d:c.submit, who:"assuta", w:"דרישת תשלום הוגשה",
+      det:'<span class="mono">'+c.id+'</span> · '+c.units+' יחידות · טופס 17 <span class="mono">'+(c.auth||"— לא צוין")+'</span>',
+      amt:c.amount, tag:"אסותא"});
+    c.remits.forEach(function(r){
+      var w = r.action==="שולם" ? "הקופה שילמה"
+            : (r.action==="נדחה" ? "הקופה דחתה" : "הקופה שילמה חלקית");
+      ev.push({d:r.date, who:"payer", w:w,
+        det:'<span class="mono">'+c.id+'</span>'+(r.reason ? ' · <span class="mono">'+r.reason+'</span> · '+esc(r.reason_he) : ""),
+        amt:r.paid, bad:(r.action!=="שולם"), tag:"קופה"});
+    });
+  });
+  ev.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
+
+  /* order that should not happen: a form that arrives after the claim it was needed for */
+  var firstReject = null;
+  ev.forEach(function(x){ if(x.bad && firstReject === null) firstReject = x.d; });
+  ev.forEach(function(x){
+    if(x.auth && firstReject && x.d > firstReject)
+      x.flag = "ההתחייבות הגיעה " + days(firstReject, x.d) + " ימים אחרי שהדרישה כבר נדחתה";
+    if(x.auth && x.d > e.dt)
+      x.flag = (x.flag ? x.flag + ". " : "") + "הונפקה " + days(e.dt, x.d) + " ימים אחרי שהשירות ניתן";
+    if(x.bundled) x.flag = "השירות כלול במחיר החבילה — אין לחייב עליו בנפרד";
+  });
+  return ev;
+}
+
+/* ---------- the one-paragraph story ---------- */
+function story(e){
+  var who = esc(PAYER[e.py]||e.py), site = esc(SITE[e.st]||e.st);
+  var head = 'ב־'+dt(e.dt)+' בוצע ב'+site+' '+esc(e.sn)+' למטופל <b>'+e.pt+'</b>, על חשבון '+who+'. ';
+  if(!e.laws.length)
+    return head + 'החוזה מזכה ב־<b>'+money(e.exp)+' ₪</b>, והתקבלו <b>'+money(e.paid)+
+      ' ₪</b>. ארבע התחנות מספרות אותו סיפור והחשבון סגור.';
+  var mid = 'החוזה מזכה ב־<b>'+money(e.exp)+' ₪</b>, והתקבלו <b>'+money(e.paid)+' ₪</b>. ';
+  var tail;
+  if(e.gap > 0.004) tail = 'חסרים <b>'+money(e.gap)+' ₪</b>. ';
+  else if(e.gap < -0.004) tail = 'התקבלו <b>'+money(-e.gap)+' ₪</b> מעבר למגיע. ';
+  else tail = 'הסכום נכון, אבל לא ההליך. ';
+  var names = e.laws.map(function(l){ return FAM[l] ? FAM[l].he : l; }).join("; ");
+  return head + mid + tail + 'הסיבה: ' + esc(names) + '.';
+}
+
+/* ---------- what to do about it ---------- */
+var ACTION = {
+  L1_unbilled: {t:"להגיש דרישת תשלום", d:function(e){
+    return e.auths.length
+      ? "יש טופס 17 בתיק. להגיש את הדרישה בצירוף " + e.auths[0].id + "."
+      : "אין טופס 17 בתיק. לבקש התחייבות מהקופה ואז להגיש — בלעדיה הדרישה תידחה."; }},
+  L2_underbilled: {t:"להגיש דרישה משלימה", d:function(){
+    return "הדרישה הוגשה מתחת למחיר החוזה והקופה שילמה בדיוק את מה שנדרש. ההפרש נגבה רק אם מגישים אותו."; }},
+  L3_underpaid_collectible: {t:"לערער על ההפחתה", d:function(e){
+    return "ההתחייבות מכסה את מה שבוצע. לפנות למחלקת ההסדרים של " + (PAYER[e.py]||e.py) +
+           " עם מספר ההתחייבות ולדרוש את ההפרש."; }},
+  L5_failed_recovery: {t:"להגיש מחדש", d:function(e){
+    var a = e.auths.length ? e.auths[0].id : "ההתחייבות";
+    return "הדרישה נדחתה לפני שההתחייבות נקלטה. להגיש אותה מחדש בצירוף " + a + " — אין כאן מחלוקת, רק סדר."; }},
+  L4c_units_over_approval: {t:"אין מה לגבות — לברר פנימית", d:function(){
+    return "בוצעו יחידות מעבר למה שאושר. הקופה לא חייבת בהן. הבירור הוא מול המחלקה המבצעת ומול תהליך ההתחייבות, לא מול הקופה."; }},
+  L4a_outside_validity: {t:"לתעד חשיפה — בלי פעולת גבייה", d:function(){
+    return "שולם במלואו. הסיכון הוא שהקופה תדרוש את הכסף בחזרה בביקורת. לתעד, ולסגור את הפרצה בתהליך ההתחייבות."; }},
+  L4b_wrong_provider: {t:"לתעד חשיפה — בלי פעולת גבייה", d:function(){
+    return "ההתחייבות ניתנה לאתר אחר. שולם במלואו; אותה חשיפה בביקורת."; }},
+  L6a_duplicate_claims: {t:"לזכות את הקופה", d:function(){
+    return "אותו שירות נדרש ושולם פעמיים. להוציא זיכוי על הדרישה הכפולה לפני שהקופה מוצאת אותה."; }},
+  L6b_claim_without_service: {t:"לבטל את הדרישה", d:function(){
+    return "אין שירות מתועד מאחורי הדרישה. לבטל ולזכות."; }},
+  L6c_overbilled: {t:"לזכות את ההפרש", d:function(){
+    return "נדרש ושולם מעל מחיר החוזה. להוציא זיכוי על ההפרש."; }},
+  L6d_bundled_service_billed: {t:"לזכות את הקופה", d:function(){
+    return "השירות כלול במחיר החבילה וחויב בנפרד. להוציא זיכוי על הדרישה הנפרדת."; }}
+};
+function lawAmount(e, id){
+  if(id === "L4a_outside_validity" || id === "L4b_wrong_provider") return e.paid;
+  return Math.abs(e.gap);
+}
+function evidenceOf(e, id){
+  var ids = [];
+  if(id === "L1_unbilled" || id === "L4c_units_over_approval" || id === "L2_underbilled")
+    e.services.forEach(function(s){ if(!s.bundled) ids.push(s.id); });
+  if(id === "L6d_bundled_service_billed")
+    e.services.forEach(function(s){ if(s.bundled) ids.push(s.id); });
+  e.auths.forEach(function(a){ ids.push(a.id); });
+  e.claims.forEach(function(c){ ids.push(c.id); });
+  return ids;
+}
+
+/* ---------- the case screen ---------- */
+var STATION = ["שירות שבוצע","טופס 17","דרישת תשלום","תשלום בפועל"];
+function line(k,v){ return '<div class="l"><span>'+k+'</span><b>'+v+'</b></div>'; }
+function station(cap, cards, emptyMsg){
+  var s = el("div","st");
+  s.appendChild(el("div","cap",cap));
+  if(!cards.length) s.appendChild(el("div","broken",'<b>'+emptyMsg+'</b>התחנה ריקה. השבר עצמו הוא הממצא.'));
+  else cards.forEach(function(c){ s.appendChild(c); });
+  return s;
+}
+
+var CASES = [], CIDX = -1;
+
+function openEpisode(id, list){
+  var e = null;
+  for(var i=0;i<EPS.length;i++) if(EPS[i].id === id){ e = EPS[i]; break; }
+  if(!e) return;
+  if(list){ CASES = list; CIDX = list.indexOf(e); }
+  else if(CASES.indexOf(e) < 0){ CASES = [e]; CIDX = 0; }
+  else CIDX = CASES.indexOf(e);
+
+  renderCaseNav();
+  var box = document.getElementById("epbox"); box.innerHTML = "";
+  var k = kindOf(e);
+  var col = k==="gap" ? "var(--gap)" : (k==="owed" ? "var(--owed)" : (k==="expo" ? "var(--expo)" : "var(--ok)"));
+  var gapTxt = e.gap > 0.004 ? money(e.gap)+" ₪ חסר"
+             : (e.gap < -0.004 ? money(-e.gap)+" ₪ עודף" : "0.00 ₪ — החשבון סגור");
+
+  box.appendChild(el("div","ephead",
+    '<div><div class="id">'+e.id+'</div><div class="meta">'+
+      esc(PAYER[e.py]||e.py)+' · '+esc(SITE[e.st]||e.st)+' · '+dt(e.dt)+
+      ' · מטופל <span class="mono">'+e.pt+'</span></div>'+
+      '<div class="status"><span class="chip '+CHIP[k][0]+'">'+CHIP[k][1]+'</span></div></div>'+
+    '<div class="v"><div class="a" style="color:'+col+'">'+gapTxt+'</div>'+
+    '<div class="l">צפוי '+money(e.exp)+' · התקבל '+money(e.paid)+'</div></div>'));
+
+  box.appendChild(el("div","story",'<div class="lbl">מה קרה כאן</div><p>'+story(e)+'</p>'));
+
+  /* the four stations */
+  var svc = e.services.map(function(s){
+    var c = el("div","card"+(s.bundled?" bundled":""));
+    c.innerHTML = '<div class="h">'+s.id+'</div><div class="ttl">'+esc(s.desc)+'</div>'+
+      line("קוד אסותא", s.code) + line("יחידות", s.units) + line("תאריך", dt(s.date)) +
+      line("מבצע", s.phys) +
+      (s.bundled ? '<span class="tag" style="background:var(--sunk);color:var(--ink-3)">כלול במחיר החבילה</span>' : '');
+    return c;
+  });
+  var maxUnits = e.services.reduce(function(m,s){ return Math.max(m, s.units); }, 0);
+  var auth = e.auths.map(function(a){
+    var c = el("div","card"), bad = "";
+    if(e.dt < a.from || e.dt > a.to)
+      bad += '<div class="bad">השירות ב־'+dt(e.dt)+' — מחוץ לחלון התוקף</div>';
+    if(a.site && a.site !== e.st)
+      bad += '<div class="bad">ההתחייבות לאתר '+esc(SITE[a.site]||a.site)+', הביצוע ב־'+esc(SITE[e.st]||e.st)+'</div>';
+    if(a.issued && a.issued > e.dt)
+      bad += '<div class="bad">הונפקה ב־'+dt(a.issued)+', אחרי מועד השירות</div>';
+    if(a.units && maxUnits > a.units)
+      bad += '<div class="bad">בוצעו '+maxUnits+' יחידות מול '+a.units+' מאושרות</div>';
+    c.innerHTML = '<div class="h">'+a.id+'</div><div class="ttl">'+esc(a.desc)+'</div>'+
+      line("קוד קופה", a.code || "—") + line("תוקף", dt(a.from)+" – "+dt(a.to)) +
+      line("יחידות מאושרות", a.units) + line("אתר", esc(SITE[a.site]||a.site)) +
+      line("הונפקה", dt(a.issued)) + bad +
+      (a.link === "wording" ? '<div class="bad" style="background:var(--open-soft);color:var(--open);border-inline-start-color:var(--open)">קושר לפי הניסוח בלבד — אין קוד קופה משותף</div>' : "");
+    return c;
+  });
+  var clm = [], pay = [];
+  e.claims.forEach(function(c){
+    var st = c.status==="שולם" ? "c-ok" : (c.status==="נדחה" ? "c-owed" : "c-gap");
+    var card = el("div","card");
+    card.innerHTML = '<div class="h">'+c.id+'</div>'+
+      line("קוד קופה", c.code || "—") + line("יחידות", c.units) +
+      line("סכום", money(c.amount)+" ₪") + line("הוגשה", dt(c.submit)) +
+      line("טופס 17", c.auth || "—") +
+      '<span class="tag '+st+'">'+esc(c.status)+'</span>';
+    clm.push(card);
+    c.remits.forEach(function(r){
+      var rst = r.action==="שולם" ? "c-ok" : (r.action==="נדחה" ? "c-owed" : "c-gap");
+      var rc = el("div","card");
+      rc.innerHTML = '<div class="h">'+c.id+'</div>'+
+        line("שולם", money(r.paid)+" ₪") + line("תאריך", dt(r.date)) +
+        (r.reason ? line("קוד סיבה", r.reason) : "") +
+        (r.reason_he ? '<div class="l" style="margin-top:4px"><span>'+esc(r.reason_he)+'</span></div>' : "") +
+        '<span class="tag '+rst+'">'+esc(r.action)+'</span>';
+      pay.push(rc);
+    });
+  });
+  var chain = el("div","chain");
+  chain.appendChild(station(STATION[0], svc, "לא נרשם שירות"));
+  chain.appendChild(station(STATION[1], auth, "אין התחייבות"));
+  chain.appendChild(station(STATION[2], clm, "לא הוגשה דרישה"));
+  chain.appendChild(station(STATION[3], pay, "לא התקבל תשלום"));
+  box.appendChild(chain);
+
+  box.appendChild(el("div","rail",
+    '<div class="law">חוק המחיר: <code>מחיר חבילה או תעריף × (1 − הנחה) × יחידות</code> — '+
+    'לפי גרסת החוזה שהייתה בתוקף ביום השירות, ולפי קוד אסותא של השירות שבוצע, לא לפי הקוד שנכתב בדרישה.</div>'+
+    '<div class="sums"><div><div class="l">צפוי</div><div class="v">'+money(e.exp)+'</div></div>'+
+    '<div><div class="l">התקבל</div><div class="v">'+money(e.paid)+'</div></div>'+
+    '<div><div class="l">שארית</div><div class="v" style="color:'+col+'">'+money(e.gap)+'</div></div></div>'));
+
+  /* timeline on the left, actions on the right */
+  var split = el("div","split2");
+  var left = el("div","left");
+  var tl = el("div","tl");
+  tl.appendChild(el("div","lbl","ציר הזמן של התיק"));
+  var ev = timeline(e), prev = null;
+  ev.forEach(function(x){
+    var cls = "ev " + (x.bad ? "rej " : "") + x.who;
+    var since = prev ? '<span class="gapdays">+'+days(prev, x.d)+' ימים</span>' : "";
+    tl.appendChild(el("div", cls,
+      '<div class="when">'+dt(x.d)+since+'</div>'+
+      '<div class="spine"><span class="node"></span></div>'+
+      '<div><div class="what">'+x.w+'<span class="who">'+x.tag+'</span></div>'+
+      '<div class="det">'+x.det+'</div>'+
+      (x.amt !== undefined ? '<div class="amt">'+money(x.amt)+' ₪</div>' : "")+
+      (x.flag ? '<div class="flagline">'+esc(x.flag)+'</div>' : "")+'</div>'));
+    prev = x.d;
+  });
+  if(ev.length){
+    var last = ev[ev.length-1].d;
+    tl.appendChild(el("div","ev",
+      '<div class="when">'+dt(NOW)+'<span class="gapdays">+'+days(last, NOW)+' ימים</span></div>'+
+      '<div class="spine"><span class="node"></span></div>'+
+      '<div><div class="what">סוף הנתונים בייצוא</div>'+
+      '<div class="det">'+(e.laws.length
+        ? 'מאז האירוע האחרון בתיק עברו <span class="mono">'+days(last, NOW)+'</span> ימים ושום דבר לא זז.'
+        : 'לא נדרשה שום פעולה נוספת.')+'</div></div>'));
+  }
+  left.appendChild(tl);
+  split.appendChild(left);
+
+  var act = el("div","actions");
+  act.appendChild(el("div","lbl","מה לעשות עם התיק"));
+  if(e.laws.length){
+    e.laws.forEach(function(id){
+      var fam = FAM[id]; if(!fam) return;
+      var a = ACTION[id] || {t:"לבדוק", d:function(){ return ""; }};
+      var srcs = evidenceOf(e, id);
+      act.appendChild(el("div","act a-"+fam.kind,
+        '<div class="h"><span class="t">'+esc(a.t)+'</span>'+
+        '<span class="a" style="color:'+(fam.kind==="owed"?"var(--owed)":(fam.kind==="exposure"?"var(--expo)":"var(--gap)"))+'">'+
+        money(lawAmount(e,id))+' ₪</span></div>'+
+        '<div class="do">'+esc(a.d(e))+'</div>'+
+        '<div class="ev-src">על מה זה נשען: '+srcs.map(function(x){ return '<span class="mono">'+x+'</span>'; }).join("")+
+        '<span class="code">'+esc(fam.he)+' · '+id+'</span></div>'));
+    });
+  } else {
+    act.appendChild(el("div","act a-none none",
+      '<div class="h"><span class="t">אין פעולה</span><span class="a" style="color:var(--ok)">0.00 ₪</span></div>'+
+      '<div class="do">צפוי, התחייבות, דרישה ותשלום מסכימים זה עם זה. התיק סגור.</div>'));
+  }
+  split.appendChild(act);
+  box.appendChild(split);
+
+  setView("ep");
+  window.scrollTo(0,0);
+}
+
+function renderCaseNav(){
+  var n = document.getElementById("casenav"); n.innerHTML = "";
+  var back = el("button","step","→ חזרה לרשימה"); back.type = "button";
+  back.addEventListener("click", function(){ setView(lastTab); });
+  n.appendChild(back);
+  if(CASES.length > 1){
+    n.appendChild(el("span","pos","תיק "+(CIDX+1)+" מתוך "+nis(CASES.length,0)));
+    var prev = el("button","step","הקודם"); prev.type = "button"; prev.disabled = CIDX <= 0;
+    prev.addEventListener("click", function(){ if(CIDX > 0) openEpisode(CASES[CIDX-1].id); });
+    var next = el("button","step","הבא"); next.type = "button"; next.disabled = CIDX >= CASES.length-1;
+    next.addEventListener("click", function(){ if(CIDX < CASES.length-1) openEpisode(CASES[CIDX+1].id); });
+    n.appendChild(prev); n.appendChild(next);
+    if(S.law && FAM[S.law]) n.appendChild(el("span","in","בתוך: "+esc(FAM[S.law].he)));
+  }
+}
+
+/* ---------- views ---------- */
+var VIEWS = {sum:"v-sum", search:"v-search", exc:"v-exc", ep:"v-ep"};
+var lastTab = "sum";
+function setView(v){
+  Object.keys(VIEWS).forEach(function(k){ document.getElementById(VIEWS[k]).hidden = (k !== v); });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(b){
+    b.setAttribute("aria-selected", b.dataset.view === v ? "true" : "false");
+  });
+  if(v !== "ep") lastTab = v;
+  S.view = v;
+}
+Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(b){
+  b.addEventListener("click", function(){
+    if(b.dataset.view === "search") renderSearch();
+    setView(b.dataset.view);
+  });
+});
+
+var qbox = document.getElementById("q"), qclear = document.getElementById("qclear");
+qbox.addEventListener("input", function(){
+  S.q = qbox.value.trim();
+  qclear.hidden = !S.q;
+  renderSearch();
+  if(S.q && S.view !== "search") setView("search");
+});
+qclear.addEventListener("click", function(){
+  qbox.value = ""; S.q = ""; qclear.hidden = true; renderSearch(); qbox.focus();
+});
+
+/* ---------- boot ---------- */
+document.getElementById("fcounts").textContent =
+  nis(D.counts.services,0)+" שירותים · "+nis(D.counts.auths,0)+" התחייבויות · "+
+  nis(D.counts.claims,0)+" דרישות · "+nis(D.counts.remits,0)+" שורות תשלום · "+
+  nis(D.counts.contracts,0)+" שורות חוזה";
+renderKpis();
+renderSummary();
+renderFilters();
+renderSearch();
+renderExceptions();
+setView("sum");
+})();
+</script>
+
+</body>
+</html>
